@@ -22,16 +22,16 @@ class GlApp {
 
         this.vertex_array = {plane: null, cube: null, sphere: null};
 
-        let gouraud_color_vs = this.GetFile('/shaders/gouraud_color.vert');
-        let gouraud_color_fs = this.GetFile('/shaders/gouraud_color.frag');
-        let gouraud_texture_vs = this.GetFile('/shaders/gouraud_texture.vert');
-        let gouraud_texture_fs = this.GetFile('/shaders/gouraud_texture.frag');
-        let phong_color_vs = this.GetFile('/shaders/phong_color.vert');
-        let phong_color_fs = this.GetFile('/shaders/phong_color.frag');
-        let phong_texture_vs = this.GetFile('/shaders/phong_texture.vert');
-        let phong_texture_fs = this.GetFile('/shaders/phong_texture.frag');
-        let emissive_vs = this.GetFile('/shaders/emissive.vert');
-        let emissive_fs = this.GetFile('/shaders/emissive.frag');
+        let gouraud_color_vs = this.GetFile('shaders/gouraud_color.vert');
+        let gouraud_color_fs = this.GetFile('shaders/gouraud_color.frag');
+        let gouraud_texture_vs = this.GetFile('shaders/gouraud_texture.vert');
+        let gouraud_texture_fs = this.GetFile('shaders/gouraud_texture.frag');
+        let phong_color_vs = this.GetFile('shaders/phong_color.vert');
+        let phong_color_fs = this.GetFile('shaders/phong_color.frag');
+        let phong_texture_vs = this.GetFile('shaders/phong_texture.vert');
+        let phong_texture_fs = this.GetFile('shaders/phong_texture.frag');
+        let emissive_vs = this.GetFile('shaders/emissive.vert');
+        let emissive_fs = this.GetFile('shaders/emissive.frag');
 
         Promise.all([gouraud_color_vs, gouraud_color_fs, gouraud_texture_vs, gouraud_texture_fs,
                      phong_color_vs, phong_color_fs, phong_texture_vs, phong_texture_fs,
