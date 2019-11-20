@@ -14,7 +14,7 @@
                 "shininess": 1
             },
             "texture": {
-                "url": "/images/Checker.jpg",
+                "url": "images/Checker.jpg",
                 "scale": [4, 4]
             },
             "center": [0.0, 0.0, 0.0],
@@ -29,7 +29,7 @@
                 "shininess": 32
             },
             "texture": {
-                "url": "/images/World_Map.jpg",
+                "url": "images/World_Map.jpg",
                 "scale": [1, 1]
             },
             "center": [0.0, 1.0, -3.0],
