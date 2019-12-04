@@ -64,7 +64,7 @@ class GlApp {
 
     InitializeTexture(image_url) {
         // create a texture, and upload a temporary 1px white RGBA array [255,255,255,255]
-        let texture = this.gl.createTexture();;
+        let texture = this.gl.createTexture();
 
         // load the actual image
         let image = new Image();
