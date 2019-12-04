@@ -92,7 +92,7 @@ class GlApp {
             glMatrix.mat4.translate(this.model_matrix, this.model_matrix, this.scene.models[i].center);
             glMatrix.mat4.scale(this.model_matrix, this.model_matrix, this.scene.models[i].size);
 
-            this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.models[i].material.color);
+            this.gl.uniform3fv(this.shader['emissive'].uniform.material_col, this.scene.models[i].material.color);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.projection, false, this.projection_matrix);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.model, false, this.model_matrix);
@@ -111,7 +111,7 @@ class GlApp {
             glMatrix.mat4.scale(this.model_matrix, this.model_matrix, glMatrix.vec3.fromValues(0.1, 0.1, 0.1));
 
 
-            this.gl.uniform3fv(this.shader['emissive'].uniform.material, this.scene.light.point_lights[i].color);
+            this.gl.uniform3fv(this.shader['emissive'].uniform.material_col, this.scene.light.point_lights[i].color);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.projection, false, this.projection_matrix);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.view, false, this.view_matrix);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniform.model, false, this.model_matrix);
@@ -265,7 +265,7 @@ class GlApp {
 
         this.LinkShaderProgram(program);
 
-        let material_uniform = this.gl.getUniformLocation(program, 'material_color');
+        let material_col_uniform = this.gl.getUniformLocation(program, 'material_color');
         let projection_uniform = this.gl.getUniformLocation(program, 'projection_matrix');
         let view_uniform = this.gl.getUniformLocation(program, 'view_matrix');
         let model_uniform = this.gl.getUniformLocation(program, 'model_matrix');
@@ -273,7 +273,7 @@ class GlApp {
         this.shader[program_name] = {
             program: program,
             uniform: {
-                material: material_uniform,
+                material_col: material_col_uniform,
                 projection: projection_uniform,
                 view: view_uniform,
                 model: model_uniform
