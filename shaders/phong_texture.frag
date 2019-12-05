@@ -2,9 +2,8 @@
 
 precision mediump float;
 
-in vec3 ambient;
-in vec3 diffuse;
-in vec3 specular;
+in vec3 frag_pos;
+in vec3 frag_normal;
 in vec2 frag_texcoord;
 
 uniform vec3 light_ambient;
