@@ -1,68 +1,107 @@
-function CreatePlaneVao(glapp) {
-    let vertex_array = glapp.gl.createVertexArray();
-    glapp.gl.bindVertexArray(vertex_array);
+function CreatePlaneVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
+    // create a new Vertex Array Object
+    let vertex_array = gl.createVertexArray();
+    // set newly created Vertex Array Object as the active one we are modifying
+    gl.bindVertexArray(vertex_array);
 
-    // Vertices
-    let vertex_position_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_position_buffer);
+    
+    // create buffer to store vertex positions (3D points)
+    let vertex_position_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_position_buffer);
+    // create array of 3D vertex values (each set of 3 values specifies a vertex: x, y, z)
     let vertices = [
         -0.5, 0.0,  0.5,
          0.5, 0.0,  0.5,
          0.5, 0.0, -0.5,
         -0.5, 0.0, -0.5
     ];
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(vertices), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_position_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_position_attrib, 3, glapp.gl.FLOAT, false, 0, 0);
+    // store array of vertex positions in the vertex_position_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // enable position_attrib in our GPU program
+    gl.enableVertexAttribArray(position_attrib);
+    // attach vertex_position_buffer to the position_attrib
+    // (as 3-component floating point values)
+    gl.vertexAttribPointer(position_attrib, 3, gl.FLOAT, false, 0, 0);
 
-    // Normals
-    let vertex_normal_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_normal_buffer);
+
+    // create buffer to store vertex normals (vector pointing perpendicular to surface)
+    let vertex_normal_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_normal_buffer);
+    // create array of 3D vector values (each set of 3 values specifies a normalized vector: x, y, z)
     let normals = [
         0.0, 1.0, 0.0,
         0.0, 1.0, 0.0,
         0.0, 1.0, 0.0,
         0.0, 1.0, 0.0
     ];
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(normals), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_normal_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_normal_attrib, 3, glapp.gl.FLOAT, false, 0, 0);
+    // store array of vertex normals in the vertex_normal_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+    // enable normal_attrib in our GPU program
+    gl.enableVertexAttribArray(normal_attrib);
+    // attach vertex_normal_buffer to the normal_attrib
+    // (as 3-component floating point values)
+    gl.vertexAttribPointer(normal_attrib, 3, gl.FLOAT, false, 0, 0);
 
-    // Texture coordinates
-    let vertex_texcoord_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_texcoord_buffer);
+
+    // create buffer to store texture coordinate (2D coordinates for mapping images to the surface)
+    let vertex_texcoord_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_texcoord_buffer);
+    // create array of 2D texture coordinate values (each set of 2 values specifies texture coordinate: u, v)
     let texcoords = [
         0.0,  0.0,
         1.0,  0.0,
         1.0,  1.0,
         0.0,  1.0
     ];
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(texcoords), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_texcoord_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_texcoord_attrib, 2, glapp.gl.FLOAT, false, 0, 0);
+    // store array of vertex texture coordinates in the vertex_texcoord_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
+    // enable texcoord_attrib in our GPU program
+    gl.enableVertexAttribArray(texcoord_attrib);
+    // attach vertex_texcoord_buffer to the texcoord_attrib
+    // (as 2-component floating point values)
+    gl.vertexAttribPointer(texcoord_attrib, 2, gl.FLOAT, false, 0, 0);
 
-    // Faces of the triangles
-    let vertex_index_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ELEMENT_ARRAY_BUFFER, vertex_index_buffer);
+    
+    // create buffer to store faces of the triangle
+    let vertex_index_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertex_index_buffer);
+    // create array of vertex indices (each set of 3 represents a triangle)
     let indices = [
          0,  1,  2,      0,  2,  3,
     ];
-    glapp.gl.bufferData(glapp.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), glapp.gl.STATIC_DRAW);
+    // store array of vertex indices in the vertex_index_buffer
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
-    glapp.gl.bindVertexArray(null);
 
+    // no longer modifying our Vertex Array Object, so deselect
+    gl.bindVertexArray(null);
+
+
+    // store the number of vertices used for entire model (number of faces * 3)
     vertex_array.face_index_count = indices.length;
 
+
+    // return created Vertex Array Object
     return vertex_array;
 }
 
-function CreateCubeVao(glapp) {
-    let vertex_array = glapp.gl.createVertexArray();
-    glapp.gl.bindVertexArray(vertex_array);
 
-    // Vertices
-    let vertex_position_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_position_buffer);
+function CreateCubeVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
+    // create a new Vertex Array Object
+    let vertex_array = gl.createVertexArray();
+    // set newly created Vertex Array Object as the active one we are modifying
+    gl.bindVertexArray(vertex_array);
+
+    
+    // create buffer to store vertex positions (3D points)
+    let vertex_position_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_position_buffer);
+    // create array of 3D vertex values (each set of 3 values specifies a vertex: x, y, z)
     let vertices = [
         // Front face
         -0.5, -0.5,  0.5,
@@ -100,13 +139,20 @@ function CreateCubeVao(glapp) {
         -0.5,  0.5,  0.5,
         -0.5,  0.5, -0.5
     ];
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(vertices), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_position_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_position_attrib, 3, glapp.gl.FLOAT, false, 0, 0);
+    // store array of vertex positions in the vertex_position_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // enable position_attrib in our GPU program
+    gl.enableVertexAttribArray(position_attrib);
+    // attach vertex_position_buffer to the position_attrib
+    // (as 3-component floating point values)
+    gl.vertexAttribPointer(position_attrib, 3, gl.FLOAT, false, 0, 0);
 
-    // Normals
-    let vertex_normal_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_normal_buffer);
+
+    // create buffer to store vertex normals (vector pointing perpendicular to surface)
+    let vertex_normal_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_normal_buffer);
+    // create array of 3D vector values (each set of 3 values specifies a normalized vector: x, y, z)
     let normals = [
         // Front
         0.0,  0.0,  1.0,
@@ -144,13 +190,20 @@ function CreateCubeVao(glapp) {
         -1.0,  0.0,  0.0,
         -1.0,  0.0,  0.0
     ];
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(normals), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_normal_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_normal_attrib, 3, glapp.gl.FLOAT, false, 0, 0);
+    // store array of vertex normals in the vertex_normal_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+    // enable normal_attrib in our GPU program
+    gl.enableVertexAttribArray(normal_attrib);
+    // attach vertex_normal_buffer to the normal_attrib
+    // (as 3-component floating point values)
+    gl.vertexAttribPointer(normal_attrib, 3, gl.FLOAT, false, 0, 0);
 
-    // Texture coordinates
-    let vertex_texcoord_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_texcoord_buffer);
+
+    // create buffer to store texture coordinate (2D coordinates for mapping images to the surface)
+    let vertex_texcoord_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_texcoord_buffer);
+    // create array of 2D texture coordinate values (each set of 2 values specifies texture coordinate: u, v)
     let texcoords = [
         // Front
         0.0,  0.0,
@@ -188,13 +241,20 @@ function CreateCubeVao(glapp) {
         1.0,  1.0,
         0.0,  1.0
     ];
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(texcoords), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_texcoord_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_texcoord_attrib, 2, glapp.gl.FLOAT, false, 0, 0);
+    // store array of vertex texture coordinates in the vertex_texcoord_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
+    // enable texcoord_attrib in our GPU program
+    gl.enableVertexAttribArray(texcoord_attrib);
+    // attach vertex_texcoord_buffer to the texcoord_attrib
+    // (as 2-component floating point values)
+    gl.vertexAttribPointer(texcoord_attrib, 2, gl.FLOAT, false, 0, 0);
 
-    // Faces of the triangles
-    let vertex_index_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ELEMENT_ARRAY_BUFFER, vertex_index_buffer);
+    
+    // create buffer to store faces of the triangle
+    let vertex_index_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertex_index_buffer);
+    // create array of vertex indices (each set of 3 represents a triangle)
     let indices = [
          0,  1,  2,      0,  2,  3,   // Front
          4,  5,  6,      4,  6,  7,   // Back
@@ -203,19 +263,31 @@ function CreateCubeVao(glapp) {
         16, 17, 18,     16, 18, 19,   // Right
         20, 21, 22,     20, 22, 23    // Left
     ];
-    glapp.gl.bufferData(glapp.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), glapp.gl.STATIC_DRAW);
+    // store array of vertex indices in the vertex_index_buffer
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
-    glapp.gl.bindVertexArray(null);
 
+    // no longer modifying our Vertex Array Object, so deselect
+    gl.bindVertexArray(null);
+
+
+    // store the number of vertices used for entire model (number of faces * 3)
     vertex_array.face_index_count = indices.length;
 
+
+    // return created Vertex Array Object
     return vertex_array;
 }
 
-function CreateSphereVao(glapp) {
-    let vertex_array = glapp.gl.createVertexArray();
-    glapp.gl.bindVertexArray(vertex_array);
 
+function CreateSphereVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
+    // create a new Vertex Array Object
+    let vertex_array = gl.createVertexArray();
+    // set newly created Vertex Array Object as the active one we are modifying
+    gl.bindVertexArray(vertex_array);
+
+
+    // calculate vertices, normals, texture coordinate, and faces
     let slices = 36;
     let stacks = 18;
 
@@ -258,35 +330,62 @@ function CreateSphereVao(glapp) {
         }
     }
 
-    // Vertices
-    let vertex_position_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_position_buffer);
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(vertices), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_position_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_position_attrib, 3, glapp.gl.FLOAT, false, 0, 0);
+    
+    // create buffer to store vertex positions (3D points)
+    let vertex_position_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_position_buffer);
+    // store array of vertex positions in the vertex_position_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // enable position_attrib in our GPU program
+    gl.enableVertexAttribArray(position_attrib);
+    // attach vertex_position_buffer to the position_attrib
+    // (as 3-component floating point values)
+    gl.vertexAttribPointer(position_attrib, 3, gl.FLOAT, false, 0, 0);
 
-    // Normals
-    let vertex_normal_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_normal_buffer);
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(normals), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_normal_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_normal_attrib, 3, glapp.gl.FLOAT, false, 0, 0);
 
-    // Texture coordinates
-    let vertex_texcoord_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ARRAY_BUFFER, vertex_texcoord_buffer);
-    glapp.gl.bufferData(glapp.gl.ARRAY_BUFFER, new Float32Array(texcoords), glapp.gl.STATIC_DRAW);
-    glapp.gl.enableVertexAttribArray(glapp.vertex_texcoord_attrib);
-    glapp.gl.vertexAttribPointer(glapp.vertex_texcoord_attrib, 2, glapp.gl.FLOAT, false, 0, 0);
+    // create buffer to store vertex normals (vector pointing perpendicular to surface)
+    let vertex_normal_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_normal_buffer);
+    // store array of vertex normals in the vertex_normal_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+    // enable normal_attrib in our GPU program
+    gl.enableVertexAttribArray(normal_attrib);
+    // attach vertex_normal_buffer to the normal_attrib
+    // (as 3-component floating point values)
+    gl.vertexAttribPointer(normal_attrib, 3, gl.FLOAT, false, 0, 0);
 
-    // Faces of the triangles
-    let vertex_index_buffer = glapp.gl.createBuffer();
-    glapp.gl.bindBuffer(glapp.gl.ELEMENT_ARRAY_BUFFER, vertex_index_buffer);
-    glapp.gl.bufferData(glapp.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), glapp.gl.STATIC_DRAW);
 
-    glapp.gl.bindVertexArray(null);
+    // create buffer to store texture coordinate (2D coordinates for mapping images to the surface)
+    let vertex_texcoord_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_texcoord_buffer);
+    // store array of vertex texture coordinates in the vertex_texcoord_buffer
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
+    // enable texcoord_attrib in our GPU program
+    gl.enableVertexAttribArray(texcoord_attrib);
+    // attach vertex_texcoord_buffer to the texcoord_attrib
+    // (as 2-component floating point values)
+    gl.vertexAttribPointer(texcoord_attrib, 2, gl.FLOAT, false, 0, 0);
 
+    
+    // create buffer to store faces of the triangle
+    let vertex_index_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertex_index_buffer);
+    // store array of vertex indices in the vertex_index_buffer
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+
+    // no longer modifying our Vertex Array Object, so deselect
+    gl.bindVertexArray(null);
+
+
+    // store the number of vertices used for entire model (number of faces * 3)
     vertex_array.face_index_count = indices.length;
 
+
+    // return created Vertex Array Object
     return vertex_array;
 }

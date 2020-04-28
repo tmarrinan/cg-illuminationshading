@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>3D Shading and Illumination</title>
+    <title>3D Illumination and Shading</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script type="application/javascript" src="scripts/gl-matrix-min.js"></script>
     <script type="application/javascript" src="scripts/models.js"></script>
-    <script type="application/javascript" src="scripts/shadeilluminate.js"></script>
+    <script type="application/javascript" src="scripts/illuminate.js"></script>
     <script type="application/javascript">
         var glapp;
         var scene;
@@ -31,10 +31,13 @@
                                 shininess: 1
                             },
                             center: glMatrix.vec3.fromValues(0.0, 0.0, -8.0),  // x, y, z
-                            size: glMatrix.vec3.fromValues(8.0, 1.0, 8.0)  // width, 1.0, depth
+                            size: glMatrix.vec3.fromValues(8.0, 1.0, 8.0),  // width, 1.0, depth
+                            rotate_x: 0,
+                            rotate_y: 0,
+                            rotate_z: 0
                         },
                         {
-                            type: 'cube',
+                            type: 'sphere',
                             shader: 'color',
                             material: {
                                 color: glMatrix.vec3.fromValues(0.1, 0.4, 0.9),  // red, green, blue
@@ -42,7 +45,10 @@
                                 shininess: 32
                             },
                             center: glMatrix.vec3.fromValues(0.0, 1.0, -6.0), // x, y, z
-                            size: glMatrix.vec3.fromValues(2.0, 2.0, 2.0)  // width, height, depth
+                            size: glMatrix.vec3.fromValues(2.0, 2.0, 2.0),  // width, height, depth
+                            rotate_x: 0,
+                            rotate_y: 0,
+                            rotate_z: 0
                         }
                     ],
                     light: {
@@ -94,6 +100,9 @@
                     m.size = glMatrix.vec3.fromValues(new_scene.models[i].size[0], 
                                                       new_scene.models[i].size[1],
                                                       new_scene.models[i].size[2]);
+                    m.rotate_x = new_scene.models[i].rotate_x || 0;
+                    m.rotate_x = new_scene.models[i].rotate_y || 0;
+                    m.rotate_x = new_scene.models[i].rotate_z || 0;
                     if (m.shader === 'texture') {
                         m.texture = {};
                         m.texture.url = new_scene.models[i].texture.url;
