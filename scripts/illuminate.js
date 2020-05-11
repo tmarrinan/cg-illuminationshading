@@ -102,7 +102,7 @@ class GlApp {
         }, false);
         image.src = image_url;
 
-       return texture;
+        return texture;
     }
 
     UpdateTexture(texture, image_element) {

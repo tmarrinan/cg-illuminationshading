@@ -101,11 +101,11 @@
                                                       new_scene.models[i].size[1],
                                                       new_scene.models[i].size[2]);
                     m.rotate_x = new_scene.models[i].rotate_x || 0;
-                    m.rotate_x *= Math.PI / 180
+                    m.rotate_x *= Math.PI / 180;
                     m.rotate_y = new_scene.models[i].rotate_y || 0;
-                    m.rotate_y *= Math.PI / 180
+                    m.rotate_y *= Math.PI / 180;
                     m.rotate_z = new_scene.models[i].rotate_z || 0;
-                    m.rotate_z *= Math.PI / 180
+                    m.rotate_z *= Math.PI / 180;
                     if (m.shader === 'texture') {
                         m.texture = {};
                         m.texture.url = new_scene.models[i].texture.url;
