@@ -63,6 +63,11 @@
                 }
             });
             glapp = new GlApp('view', 800, 600, scene);
+            for (let i = 0; i < scene.models.length; i++) {
+                if (scene.models[i].shader === 'texture') {
+                    scene.models[i].texture.id = glapp.InitializeTexture(scene.models[i].texture.url);
+                }
+            }
 
             // event handler for pressing arrow keys
             document.addEventListener('keydown', OnKeyDown, false);
