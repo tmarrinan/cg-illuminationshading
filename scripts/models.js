@@ -1,4 +1,4 @@
-function CreatePlaneVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
+function createPlaneVertexArray(gl, position_attrib, normal_attrib, texcoord_attrib) {
     // create a new Vertex Array Object
     let vertex_array = gl.createVertexArray();
     // set newly created Vertex Array Object as the active one we are modifying
@@ -90,7 +90,7 @@ function CreatePlaneVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
 }
 
 
-function CreateCubeVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
+function createCubeVertexArray(gl, position_attrib, normal_attrib, texcoord_attrib) {
     // create a new Vertex Array Object
     let vertex_array = gl.createVertexArray();
     // set newly created Vertex Array Object as the active one we are modifying
@@ -280,7 +280,7 @@ function CreateCubeVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
 }
 
 
-function CreateSphereVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
+function createSphereVertexArray(gl, position_attrib, normal_attrib, texcoord_attrib) {
     // create a new Vertex Array Object
     let vertex_array = gl.createVertexArray();
     // set newly created Vertex Array Object as the active one we are modifying
@@ -388,4 +388,12 @@ function CreateSphereVao(gl, position_attrib, normal_attrib, texcoord_attrib) {
 
     // return created Vertex Array Object
     return vertex_array;
+}
+
+//
+// TODO: create a custom 3D model
+//         - minimum of 16 vertices
+//
+function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_attrib) {
+    return null;
 }
