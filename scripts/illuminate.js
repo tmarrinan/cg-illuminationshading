@@ -154,6 +154,8 @@ class GlApp {
         
         // draw all models
         for (let i = 0; i < this.scene.models.length; i ++) {
+            if (this.vertex_array[this.scene.models[i].type] == null) continue;
+            
             //
             // TODO: properly select shader here
             //
