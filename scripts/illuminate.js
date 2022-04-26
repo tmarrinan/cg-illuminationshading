@@ -147,7 +147,6 @@ class GlApp {
         // TODO: update image for specified texture
         //
     }
-
     render() {
         // delete previous frame (reset both framebuffer and z-buffer)
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -159,7 +158,8 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
-            let selected_shader = 'emissive';
+            
+            let selected_shader = this.algorithm + "_" + this.scene.models[i].shader;
             this.gl.useProgram(this.shader[selected_shader].program);
 
             // transform model to proper position, size, and orientation
@@ -178,15 +178,30 @@ class GlApp {
             //
             // TODO: bind proper texture and set uniform (if shader is a textured one)
             //
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.material_specular, this.scene.models[i].material.specular);
+            this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, this.scene.models[i].material.shininess);
+
+
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.camera_position, this.scene.camera.position);
+            //set ambient light
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_ambient, this.scene.light.ambient);
+            for(let j = 0; j < this.scene.light.point_lights.length; j ++){
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_position, this.scene.light.point_lights[j].position);
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_color, this.scene.light.point_lights[j].color);
+            }
+            
+
 
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
             this.gl.bindVertexArray(null);
         }
 
+
         // draw all light sources
         for (let i = 0; i < this.scene.light.point_lights.length; i ++) {
             this.gl.useProgram(this.shader['emissive'].program);
+
 
             glMatrix.mat4.identity(this.model_matrix);
             glMatrix.mat4.translate(this.model_matrix, this.model_matrix, this.scene.light.point_lights[i].position);
@@ -217,6 +232,10 @@ class GlApp {
         let cam_up = this.scene.camera.up;
         glMatrix.mat4.lookAt(this.view_matrix, cam_pos, cam_target, cam_up);
 
+        //update camera position
+        //this.gl.useProgram(this.shader[].program);
+        //this.gl.uniform3fv(this.shader[].uniforms.camera_position, cam_pos);
+        
         // render scene
         this.render();
     }
