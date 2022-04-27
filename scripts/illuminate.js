@@ -178,10 +178,15 @@ class GlApp {
             //
             // TODO: bind proper texture and set uniform (if shader is a textured one)
             //
-
-            this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);
-            this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
-            this.gl.bindVertexArray(null);
+            
+            //this.gl.activeTexture(gl.TEXTURE0);   // Select texture
+            //this.gl.bindTexture(gl.TEXTURE_2D, app.texture);  // Bind texture
+            //this.gl.uniform1i(app.uniforms.square_texture1, 0);   // Set uniform
+            //this.gl.bindTexture(gl.TEXTURE_2D, null);     // Unselect our texture
+            
+            this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);     // Select our triangle 'vertex array object' for drawing
+            this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);     // Draw the selected 'vertex array object' (using triangles)
+            this.gl.bindVertexArray(null);     // Unselect our triangle 'vertex array object'
         }
 
         // draw all light sources
