@@ -20,4 +20,10 @@ out vec3 specular;
 
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
+    ambient = light_ambient;
+    vec4 norm_light_direction = normalize(gl_Position - vec4(light_position, 1.0));
+    vec4 dotProd = vec4(dot(normalize(gl_Position), norm_light_direction));
+    //left out intensity for now
+    diffuse = vec3(dotProd);
+    specular = vec3(dot((2.0 * dotProd * (norm_light_direction - normalize(gl_Position))), normalize(gl_Position - vec4(camera_position, 1.0))));
 }

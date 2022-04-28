@@ -159,7 +159,9 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
-            let selected_shader = 'emissive';
+            console.log(this.algorithm);
+            //let selected_shader = this.algorithm;
+            let selected_shader = "emissive";
             this.gl.useProgram(this.shader[selected_shader].program);
 
             // transform model to proper position, size, and orientation
@@ -174,11 +176,19 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.projection_matrix, false, this.projection_matrix);
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.view_matrix, false, this.view_matrix);
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.model_matrix, false, this.model_matrix);
+
             
             //
             // TODO: bind proper texture and set uniform (if shader is a textured one)
             //
 
+            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.light_ambient, false, this.scene.light.ambient);
+            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.light_position, false, this.scene.light.point_lights[0].position);
+            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.light_color, false, this.scene.light.point_lights[0].color);
+            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.camera_position, false, this.scene.camera.position);
+            //________________________
+            //this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.material_shininess, false, this.scene.models[i].material.shininess);
+            //________________________
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
             this.gl.bindVertexArray(null);
@@ -202,7 +212,9 @@ class GlApp {
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array['sphere'].face_index_count, this.gl.UNSIGNED_SHORT, 0);
             this.gl.bindVertexArray(null);
         }
+        console.log(this.scene.light);
     }
+   
 
     updateScene(scene) {
         // update scene
