@@ -21,10 +21,21 @@ out vec3 specular;
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
     ambient = light_ambient;
-    vec3 norm_light_direction = normalize(vertex_position - light_position);
 
-    vec3 dotProd = vec3(dot(vertex_normal, norm_light_direction));
+    vec3 new_position = vec3(model_matrix * vec4(vertex_position, 1.0));
+    vec3 new_normal = normalize(vec3(model_matrix * vec4(vertex_normal, 0.0)));
+
+    vec3 norm_light_direction = normalize(light_position - new_position);
+
+    float dotProd = dot(new_normal, norm_light_direction);
+    dotProd = dotProd < 0.0 ? 0.0 : dotProd;
+    //dotProd = dotProd > 1.0 ? 1.0 : dotProd;
     
     diffuse = light_color * dotProd;
-    specular = light_color * pow(dot((2.0 * dotProd * (vertex_normal - vertex_position)), (vertex_position - camera_position)), material_shininess);
+
+    float powerResult = pow(dot((2.0 * dotProd * (new_normal - new_position)), (new_position - camera_position)), material_shininess);
+    powerResult = powerResult < 0.0 ? 0.0 : powerResult;
+    //powerResult > 1.0 ? 1.0 : powerResult;
+
+    specular = light_color * powerResult;
 }

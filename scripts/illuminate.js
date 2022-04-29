@@ -182,10 +182,10 @@ class GlApp {
             // TODO: bind proper texture and set uniform (if shader is a textured one)
             //
 
-            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.light_ambient, false, this.scene.light.ambient);
-            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.light_position, false, this.scene.light.point_lights[0].position);
-            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.light_color, false, this.scene.light.point_lights[0].color);
-            this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.camera_position, false, this.scene.camera.position);
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_ambient, this.scene.light.ambient);
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_position, this.scene.light.point_lights[0].position);
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_color, this.scene.light.point_lights[0].color);
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.camera_position, this.scene.camera.position);
             
             this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, false, this.scene.models[i].material.shininess);
             
