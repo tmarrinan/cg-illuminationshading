@@ -14,5 +14,5 @@ out vec3 frag_normal;
 
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
-    #We need to pass on the position and normal only, not a lot to do
+    //We need to pass on the position and normal only, not a lot to do
 }

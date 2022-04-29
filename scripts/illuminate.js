@@ -159,7 +159,7 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
-            let selected_shader = 'emissive';
+            let selected_shader = 'gouraud_color';
             this.gl.useProgram(this.shader[selected_shader].program);
 
             // transform model to proper position, size, and orientation
