@@ -159,7 +159,15 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
+            if (this.algorithm =='gouraud'){
+                let selected_shader = 'gouraud_color';
+            } else if (this.algorithm == 'phong'){
+                let selected_shader = 'phong_color';
+            } else {
+                let selected_shader = 'emissive';
+            }
             let selected_shader = 'gouraud_color';
+            
             this.gl.useProgram(this.shader[selected_shader].program);
 
             // transform model to proper position, size, and orientation
@@ -174,6 +182,14 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.projection_matrix, false, this.projection_matrix);
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.view_matrix, false, this.view_matrix);
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.model_matrix, false, this.model_matrix);
+            if(this.algorithm != 'emissive'){
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_ambient, this.scene.light.ambient);
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_position, this.scene.light.point_lights[0].position);
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_color, this.scene.light.point_lights[0].color);
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms.camera_position, this.scene.camera.position);
+                this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, this.scene.models[i].material.shininess);
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms.material_specular, this.scene.models[i].material.specular);
+            }
             
             //
             // TODO: bind proper texture and set uniform (if shader is a textured one)
