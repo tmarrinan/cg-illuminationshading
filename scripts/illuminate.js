@@ -35,7 +35,7 @@ class GlApp {
         };
 
         this.scene = scene;                          // current scene to draw (list of models and lights)
-        this.algorithm = 'gouraud';                  // current shading algorithm to use for rendering
+        this.algorithm = 'emissive';                  // current shading algorithm to use for rendering
 
 
         // download and compile shaders into GPU program
@@ -56,7 +56,7 @@ class GlApp {
         .then((shaders) => this.loadAllShaders(shaders))
         .catch((error) => this.getFileError(error));
     }
-    
+
     loadAllShaders(shaders) {
         this.shader.gouraud_color = this.createShaderProgram(shaders[0], shaders[1]);
         this.shader.gouraud_texture = this.createShaderProgram(shaders[2], shaders[3]);
@@ -66,7 +66,7 @@ class GlApp {
 
         this.initializeGlApp();
     }
-    
+
     createShaderProgram(vert_source, frag_source) {
         // Compile shader program
         let program = glslCreateShaderProgram(this.gl, vert_source, frag_source);
@@ -81,7 +81,7 @@ class GlApp {
 
         // Get list of uniforms available in shaders
         let uniforms = glslGetShaderProgramUniforms(this.gl, program);
-        
+
         return {program: program, uniforms: uniforms};
     }
 
@@ -94,16 +94,16 @@ class GlApp {
         this.gl.enable(this.gl.DEPTH_TEST);
 
         // create models - plane, cube, sphere, and custom
-        this.vertex_array.plane = createPlaneVertexArray(this.gl, this.vertex_position_attrib, 
+        this.vertex_array.plane = createPlaneVertexArray(this.gl, this.vertex_position_attrib,
                                                                   this.vertex_normal_attrib,
                                                                   this.vertex_texcoord_attrib);
-        this.vertex_array.cube = createCubeVertexArray(this.gl, this.vertex_position_attrib, 
+        this.vertex_array.cube = createCubeVertexArray(this.gl, this.vertex_position_attrib,
                                                                 this.vertex_normal_attrib,
                                                                 this.vertex_texcoord_attrib);
-        this.vertex_array.sphere = createSphereVertexArray(this.gl, this.vertex_position_attrib, 
+        this.vertex_array.sphere = createSphereVertexArray(this.gl, this.vertex_position_attrib,
                                                                     this.vertex_normal_attrib,
                                                                     this.vertex_texcoord_attrib);
-        this.vertex_array.custom = createCustomVertexArray(this.gl, this.vertex_position_attrib, 
+        this.vertex_array.custom = createCustomVertexArray(this.gl, this.vertex_position_attrib,
                                                                     this.vertex_normal_attrib,
                                                                     this.vertex_texcoord_attrib);
 
@@ -111,7 +111,7 @@ class GlApp {
         let fov = 30.0 * (Math.PI / 180.0);
         let aspect = this.canvas.width / this.canvas.height;
         mat4.perspective(this.projection_matrix, fov, aspect, 0.1, 100.0);
-        
+
         // initialize view matrix based on scene's camera location / direction
         let cam_pos = this.scene.camera.position;
         let cam_target = this.scene.camera.target;
@@ -128,7 +128,13 @@ class GlApp {
 
         //
         // TODO: set texture parameters and upload a temporary 1px white RGBA array [255,255,255,255]
-        // 
+        //
+        //this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        //this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        //this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        //this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        //let pixel = [255, 255, 255, 255];
+        //this.gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(pixel));
 
         // download the actual image
         let image = new Image();
@@ -151,11 +157,11 @@ class GlApp {
     render() {
         // delete previous frame (reset both framebuffer and z-buffer)
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-        
+
         // draw all models
         for (let i = 0; i < this.scene.models.length; i ++) {
             if (this.vertex_array[this.scene.models[i].type] == null) continue;
-            
+
             //
             // TODO: properly select shader here
             //
@@ -167,7 +173,7 @@ class GlApp {
                 let selected_shader = 'emissive';
             }
             let selected_shader = 'gouraud_color';
-            
+
             this.gl.useProgram(this.shader[selected_shader].program);
 
             // transform model to proper position, size, and orientation
@@ -190,16 +196,16 @@ class GlApp {
                 this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, this.scene.models[i].material.shininess);
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms.material_specular, this.scene.models[i].material.specular);
             }
-            
+
             //
             // TODO: bind proper texture and set uniform (if shader is a textured one)
             //
-            
+
             //this.gl.activeTexture(gl.TEXTURE0);   // Select texture
             //this.gl.bindTexture(gl.TEXTURE_2D, app.texture);  // Bind texture
             //this.gl.uniform1i(app.uniforms.square_texture1, 0);   // Set uniform
             //this.gl.bindTexture(gl.TEXTURE_2D, null);     // Unselect our texture
-            
+
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);     // Select our triangle 'vertex array object' for drawing
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);     // Draw the selected 'vertex array object' (using triangles)
             this.gl.bindVertexArray(null);     // Unselect our triangle 'vertex array object'
@@ -212,7 +218,6 @@ class GlApp {
             glMatrix.mat4.identity(this.model_matrix);
             glMatrix.mat4.translate(this.model_matrix, this.model_matrix, this.scene.light.point_lights[i].position);
             glMatrix.mat4.scale(this.model_matrix, this.model_matrix, glMatrix.vec3.fromValues(0.1, 0.1, 0.1));
-
 
             this.gl.uniform3fv(this.shader['emissive'].uniforms.material_color, this.scene.light.point_lights[i].color);
             this.gl.uniformMatrix4fv(this.shader['emissive'].uniforms.projection_matrix, false, this.projection_matrix);
@@ -228,10 +233,10 @@ class GlApp {
     updateScene(scene) {
         // update scene
         this.scene = scene;
-        
+
         // set the background color
         this.gl.clearColor(this.scene.background[0], this.scene.background[1], this.scene.background[2], 1.0);
-        
+
         // update view matrix based on camera properties
         let cam_pos = this.scene.camera.position;
         let cam_target = this.scene.camera.target;
@@ -246,6 +251,8 @@ class GlApp {
         // update shading algorithm
         this.algorithm = algorithm;
 
+        console.log("Updated shading algorithm");
+
         // render scene
         this.render();
     }
@@ -255,6 +262,9 @@ class GlApp {
             let req = new XMLHttpRequest();
             req.onreadystatechange = function() {
                 if (req.readyState === 4 && req.status === 200) {
+
+                    console.log("Imported new scene");
+
                     resolve(req.response);
                 }
                 else if (req.readyState === 4) {
