@@ -21,20 +21,22 @@ out vec3 specular;
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
     vec3 world_vertex_position = vec3(model_matrix * vec4(vertex_position, 1.0));
-    mat4 MVI = transpose(inverse(model_matrix));
-    vec3 world_vertex_normal = mat3(MVI) * vertex_normal;
+    mat3 MVI = transpose(inverse(mat3(model_matrix)));
+    vec3 world_vertex_normal = MVI * vertex_normal;
 
     ambient = light_ambient;
 
     vec3 N = normalize(world_vertex_normal);
-    vec3 L = world_vertex_position - light_position;
+    vec3 L = light_position - world_vertex_position;
     L = normalize(L);
     float diffuseDot = dot(N,L);
+    diffuseDot = max(0.0,diffuseDot);
     diffuse = light_color * diffuseDot;
 
     vec3 R = (2.0 * diffuseDot) * N - L;
-    vec3 V = world_vertex_position - camera_position;
+    vec3 V = camera_position - world_vertex_position;
     V = normalize(V);
     float specularDot = dot(R,V);
+    specularDot = max (0.0,specularDot);
     specular = light_color * pow(specularDot,material_shininess);
 }
