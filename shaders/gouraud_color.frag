@@ -12,6 +12,8 @@ uniform vec3 material_specular; // Ks
 out vec4 FragColor;
 
 void main() {
+    // Peter implemented FragHolder
     vec3 FragHolder = (ambient * material_color) + (diffuse * material_color) + (specular * material_specular);
-    FragColor = vec4(FragHolder, 1.0);
+    
+    FragColor = vec4(FragHolder, 1.0); // FragColor out
 }

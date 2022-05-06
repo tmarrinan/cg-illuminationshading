@@ -14,5 +14,13 @@ uniform sampler2D image;        // use in conjunction with Ka and Kd
 out vec4 FragColor;
 
 void main() {
-    FragColor = texture(image, frag_texcoord);
+    // Peter implemented FragHolder
+    vec3 FragHolder = (ambient * material_color) + (diffuse * material_color) + (specular * material_specular);
+    
+    // Ben implemented texture and final
+    vec4 texture = texture(image, frag_texcoord); 
+    vec3 final = texture.rgb * FragHolder;
+    final = pow(final, vec3(1.0 / 2.2)); //Apply gamma correction to the final values.
+
+    FragColor = vec4(final, 1.0); // FragColor out
 }

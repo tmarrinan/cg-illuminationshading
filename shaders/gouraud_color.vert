@@ -20,23 +20,25 @@ out vec3 specular;
 
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
+    
+    // Peter implemented ambient, diffuse, and specular below
     vec3 world_vertex_position = vec3(model_matrix * vec4(vertex_position, 1.0));
     mat3 MVI = transpose(inverse(mat3(model_matrix)));
     vec3 world_vertex_normal = MVI * vertex_normal;
 
-    ambient = light_ambient;
+    ambient = light_ambient; // ambient out
 
     vec3 N = normalize(world_vertex_normal);
     vec3 L = light_position - world_vertex_position;
     L = normalize(L);
     float diffuseDot = dot(N,L);
     diffuseDot = max(0.0,diffuseDot);
-    diffuse = light_color * diffuseDot;
+    diffuse = light_color * diffuseDot; // diffuse out
 
     vec3 R = (2.0 * diffuseDot) * N - L;
     vec3 V = camera_position - world_vertex_position;
     V = normalize(V);
     float specularDot = dot(R,V);
     specularDot = max (0.0,specularDot);
-    specular = light_color * pow(specularDot,material_shininess);
+    specular = light_color * pow(specularDot,material_shininess); // specular out 
 }
