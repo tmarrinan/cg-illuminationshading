@@ -129,13 +129,14 @@ class GlApp {
         //
         // TODO: set texture parameters and upload a temporary 1px white RGBA array [255,255,255,255]
         //
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
         let pixel = [255, 255, 255, 255];
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(pixel));
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);     // Unselect our texture
 
         // download the actual image
         let image = new Image();
@@ -154,8 +155,10 @@ class GlApp {
         // TODO: update image for specified texture
         //
 
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image_element);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);     // Unselect our texture
+        this.render();
     }
 
     render() {
@@ -169,23 +172,24 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
-            let selected_shader = this.scene.models[i].shader; // selected shader is a model attribute and is different from UI-defined algorithm
-
+            let selected_shader = "gouraud"; // selected shader is a model attribute and is different from UI-defined algorithm
             if (this.algorithm == 'gouraud') { // Gouraud is selected in HTML UI
-                if (this.selected_shader == 'color') {
+                if (this.scene.models[i].shader == 'color') {
                     selected_shader = 'gouraud_color';
-                } else if (this.selected_shader == 'texture') {
+                } else if (this.scene.models[i].shader == 'texture') {
                     selected_shader = 'gouraud_texture';
                 }
             } else if (this.algorithm == 'phong'){ // Phong is selected in HTML UI
-                if (this.selected_shader == 'color') {
+                if (this.scene.models[i].shader == 'color') {
                     selected_shader = 'phong_color';
-                } else if (this.selected_shader == 'texture') {
+                } else if (this.scene.models[i].shader == 'texture') {
                     selected_shader = 'phong_texture';
                 }
             } else {
                 selected_shader = 'emissive';
             }
+            console.log(selected_shader);
+
         
             this.gl.useProgram(this.shader[selected_shader].program);
 
@@ -206,21 +210,16 @@ class GlApp {
             // TODO: bind proper texture and set uniform (if shader is a textured one)
             //
 
-            /*
             // Bind texture if shader is a tectured one
             if (selected_shader == 'gouraud_texture' || selected_shader == 'phong_texture') {
-                gl.activeTexture(gl.TEXTURE0);
-                let texture = this.initializeTexture(this.scene.models[i].texture.url); // initialize a texture
-                this.gl.uniform1i(this.shader[selected_shader].image, texture);   // Set uniform
-                this.gl.uniform2fv(this.shader[selected_shader].uniforms.texture_scale, this.scene.models[i].texture.scale); 
+                this.gl.activeTexture(this.gl.TEXTURE0); // Select active texture unit (i.e, the unit all other texture commands will affect.)
+                //let texture = this.initializeTexture(this.scene.models[i].texture.url); // initialize a texture from model attributes
+                this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.models[i].texture.id);
 
-                this.gl.bindTexture(gl.TEXTURE_2D, null);     // Unselect our texture
-                
-                //this.gl.activeTexture(this.gl.TEXTURE0);   // Select active texture unit (i.e, the unit all other texture commands will affect.)
-                //this.gl.bindTexture(gl.TEXTURE_2D, app.texture);  // Bind texture
-                //this.gl.uniform1i(app.uniforms.square_texture1, 0);   // Set uniform
-                //this.gl.bindTexture(gl.TEXTURE_2D, null);     // Unselect our texture
-            }*/
+                this.gl.uniform1i(this.shader[selected_shader].image, 0);   // Set uniform
+                this.gl.uniform2fv(this.shader[selected_shader].uniforms.texture_scale, this.scene.models[i].texture.scale); 
+                //this.gl.bindTexture(this.gl.TEXTURE_2D, null);     // Unselect our texture
+            }
 
             // Set uniforms
             if (this.algorithm != 'emissive'){
@@ -234,6 +233,7 @@ class GlApp {
 
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);     // Select our triangle 'vertex array object' for drawing
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);     // Draw the selected 'vertex array object' (using triangles)
+            this.gl.bindTexture(this.gl.TEXTURE_2D, null);     // Unselect our texture ANOTHER CONDITIONAL
             this.gl.bindVertexArray(null);     // Unselect our triangle 'vertex array object'
         }
 

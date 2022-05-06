@@ -18,9 +18,9 @@ void main() {
     vec3 FragHolder = (ambient * material_color) + (diffuse * material_color) + (specular * material_specular);
     
     // Ben implemented texture and final
-    vec4 texture = texture(image, frag_texcoord); 
-    vec3 final = texture.rgb * FragHolder;
+    vec4 myTexture = texture(image, frag_texcoord); 
+    vec3 final = myTexture.rgb * FragHolder;
     final = pow(final, vec3(1.0 / 2.2)); //Apply gamma correction to the final values.
-
-    FragColor = vec4(final, 1.0); // FragColor out
+    FragColor = myTexture;
+    //FragColor = vec4(final, 1.0); // FragColor out
 }

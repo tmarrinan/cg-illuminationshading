@@ -17,5 +17,11 @@ out vec2 frag_texcoord;
 
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
-    frag_texcoord = vertex_texcoord * texture_scale;
+    
+    // Peter implemented frag_pos and frag_normal
+    frag_pos = vec3(model_matrix * vec4(vertex_position, 1.0)); // frag_pos out
+    mat3 MVI = transpose(inverse(mat3(model_matrix)));
+    frag_normal = MVI * vertex_normal; // frag_normal out
+    
+    frag_texcoord = vertex_texcoord * texture_scale; // frag_texcoord out
 }
